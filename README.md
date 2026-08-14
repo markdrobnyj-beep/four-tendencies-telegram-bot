@@ -1,32 +1,32 @@
-# Telegram-бот «Чотири тенденції»
+# Telegram Bot “Four Tendencies”
 
-Бот проводить україномовний тест «Чотири тенденції»: 22 твердження, чотири нормалізовані результати, що разом дають 100%, та опис провідної тенденції. Це не медичний чи психологічний діагноз.
+The bot runs the Ukrainian-language “Four Tendencies” test: 22 statements, four normalized results that add up to 100%, and a description of the leading tendency. This is not a medical or psychological diagnosis.
 
-## Встановлення
+## Installation
 
-Потрібен Python 3.11 або новіший.
+Python 3.11 or newer is required.
 
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
+# Windows: .venv\\Scripts\\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Відкрийте `.env` і вкажіть токен бота.
+Open `.env` and enter the bot token.
 
-Щоб отримати токен, відкрийте в Telegram [@BotFather](https://t.me/BotFather), виконайте `/newbot`, задайте ім'я та username бота. BotFather надішле токен — зберігайте його в `.env` і не публікуйте.
+To get a token, open [@BotFather](https://t.me/BotFather) in Telegram, run `/newbot`, and choose the bot's name and username. BotFather will send you a token—store it in `.env` and never publish it.
 
-## Запуск
+## Running
 
 ```bash
 python bot.py
 ```
 
-Користувацькі повідомлення та кнопки бота — українською мовою. Історія результатів зберігається в `data/results.sqlite3`. Для MVP використовується `MemoryStorage`; у production його слід замінити на `RedisStorage`.
+User messages and bot buttons are in Ukrainian. Result history is stored in `data/results.sqlite3`. The MVP uses `MemoryStorage`; replace it with `RedisStorage` in production.
 
-## Тести
+## Tests
 
 ```bash
 pytest tests/
