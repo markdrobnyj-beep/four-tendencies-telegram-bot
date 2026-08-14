@@ -1,0 +1,1 @@
+"""Optional SQLite result storage."""
