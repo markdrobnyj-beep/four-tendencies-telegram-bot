@@ -1,22 +1,62 @@
 # Telegram Bot “Four Tendencies”
 
-The bot runs the Ukrainian-language “Four Tendencies” test: 22 statements, four normalized results that add up to 100%, and a description of the leading tendency. This is not a medical or psychological diagnosis.
+A Ukrainian-language Telegram bot that runs a “Four Tendencies” self-reflection
+test. It presents 22 statements, calculates four normalized results that add up
+to 100%, and describes the leading tendency. This is not a medical or
+psychological diagnosis.
+
+## Features
+
+- 22-question Ukrainian-language test.
+- Four result categories with exact 100% total after rounding.
+- Saved result history in SQLite at `data/results.sqlite3`.
+- `/start`, `/help`, and `/cancel` commands plus inline keyboards.
+- Repeat-test flow after a result is shown.
+
+## Requirements
+
+- Python 3.11 or newer
+- A Telegram bot token from [@BotFather](https://t.me/BotFather)
 
 ## Installation
 
-Python 3.11 or newer is required.
+Create a virtual environment and install the dependencies:
 
 ```bash
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-copy .env.example .env
 ```
 
-Open `.env` and enter the bot token.
+Activate the environment with the command for your platform:
 
-To get a token, open [@BotFather](https://t.me/BotFather) in Telegram, run `/newbot`, and choose the bot's name and username. BotFather will send you a token—store it in `.env` and never publish it.
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+```
+
+```bash
+# macOS/Linux
+source .venv/bin/activate
+```
+
+Install the dependencies after activating the environment:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Copy `.env.example` to `.env` and add the token:
+
+```powershell
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+```bash
+# macOS/Linux
+cp .env.example .env
+```
+
+Never publish the token or commit `.env`.
 
 ## Running
 
@@ -24,10 +64,12 @@ To get a token, open [@BotFather](https://t.me/BotFather) in Telegram, run `/new
 python bot.py
 ```
 
-User messages and bot buttons are in Ukrainian. Result history is stored in `data/results.sqlite3`. The MVP uses `MemoryStorage`; replace it with `RedisStorage` in production.
+User messages and bot buttons are in Ukrainian. The MVP uses aiogram's
+`MemoryStorage`; replace it with `RedisStorage` for a multi-process production
+deployment.
 
 ## Tests
 
 ```bash
-pytest tests/
+python -m pytest tests/
 ```
