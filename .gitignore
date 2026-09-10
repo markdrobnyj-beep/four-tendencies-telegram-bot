@@ -6,3 +6,6 @@ __pycache__/
 data/*.sqlite3
 .venv/
 bot.*.log
+node_modules/
+.wrangler/
+coverage/
