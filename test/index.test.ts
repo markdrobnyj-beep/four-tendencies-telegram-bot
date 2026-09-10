@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { handleRequest } from "../src/index";
 import type { InlineKeyboard, TelegramClientPort } from "../src/telegram";
@@ -67,9 +67,18 @@ describe("Worker HTTP handler", () => {
   });
 
   it("rejects a webhook with the wrong Telegram secret", async () => {
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const response = await handleRequest(webhookRequest(START_UPDATE, "wrong"), env);
 
     expect(response.status).toBe(401);
+    expect(warning).toHaveBeenCalledWith(
+      JSON.stringify({
+        event: "webhook_unauthorized",
+        receivedSecretLength: 5,
+        expectedSecretLength: 11,
+      }),
+    );
+    warning.mockRestore();
   });
 
   it("rejects malformed Telegram updates", async () => {

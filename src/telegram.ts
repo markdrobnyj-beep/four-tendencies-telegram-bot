@@ -38,6 +38,8 @@ export interface TelegramClientPort {
 
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
+const defaultFetcher: Fetcher = (input, init) => fetch(input, init);
+
 function keyboardPayload(keyboard?: InlineKeyboard): Record<string, unknown> {
   return keyboard ? { reply_markup: { inline_keyboard: keyboard } } : {};
 }
@@ -45,7 +47,7 @@ function keyboardPayload(keyboard?: InlineKeyboard): Record<string, unknown> {
 export class TelegramClient implements TelegramClientPort {
   constructor(
     private readonly token: string,
-    private readonly fetcher: Fetcher = fetch,
+    private readonly fetcher: Fetcher = defaultFetcher,
   ) {}
 
   async sendMessage(chatId: number, text: string, keyboard?: InlineKeyboard): Promise<void> {

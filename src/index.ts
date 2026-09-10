@@ -135,7 +135,15 @@ export async function handleRequest(
       headers: { allow: "POST" },
     });
   }
-  if (!secretsMatch(request.headers.get(SECRET_HEADER), env.WEBHOOK_SECRET)) {
+  const receivedSecret = request.headers.get(SECRET_HEADER);
+  if (!secretsMatch(receivedSecret, env.WEBHOOK_SECRET)) {
+    console.warn(
+      JSON.stringify({
+        event: "webhook_unauthorized",
+        receivedSecretLength: receivedSecret?.length ?? 0,
+        expectedSecretLength: env.WEBHOOK_SECRET?.length ?? 0,
+      }),
+    );
     return new Response("Unauthorized", { status: 401 });
   }
 

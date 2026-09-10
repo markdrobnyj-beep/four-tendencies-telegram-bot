@@ -1,8 +1,25 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { TelegramClient } from "../src/telegram";
 
 describe("TelegramClient", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("calls the default fetch without binding it to the client", async () => {
+    vi.stubGlobal(
+      "fetch",
+      function (this: unknown): Promise<Response> {
+        if (this !== undefined) throw new TypeError("Illegal invocation");
+        return Promise.resolve(Response.json({ ok: true, result: {} }));
+      },
+    );
+    const client = new TelegramClient("test-token");
+
+    await expect(client.sendMessage(42, "Привіт")).resolves.toBeUndefined();
+  });
+
   it("sends a Telegram Bot API request with the expected payload", async () => {
     let requestedUrl = "";
     let requestedBody = "";
