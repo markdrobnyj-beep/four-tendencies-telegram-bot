@@ -9,67 +9,53 @@ psychological diagnosis.
 
 - 22-question Ukrainian-language test.
 - Four result categories with exact 100% total after rounding.
-- Saved result history in SQLite at `data/results.sqlite3`.
+- Durable sessions and result history in Cloudflare D1.
 - `/start`, `/help`, and `/cancel` commands plus inline keyboards.
 - Repeat-test flow after a result is shown.
 
-## Requirements
+## Production architecture
 
-- Python 3.11 or newer
-- A Telegram bot token from [@BotFather](https://t.me/BotFather)
+The production bot runs as a TypeScript Cloudflare Worker. Telegram sends
+updates to `/webhook`; active sessions, completed results, and update
+deduplication are stored in Cloudflare D1. `/health` is the public health check.
 
-## Installation
+The original Python/aiogram implementation remains in the repository as legacy
+source, but it is not used by the Cloudflare deployment.
 
-Create a virtual environment and install the dependencies:
+## Local development
 
-```bash
-python -m venv .venv
-```
-
-Activate the environment with the command for your platform:
-
-```powershell
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-```
+Requirements: Node.js 22+, npm, a Cloudflare account, and a Telegram token from
+[@BotFather](https://t.me/BotFather).
 
 ```bash
-# macOS/Linux
-source .venv/bin/activate
+npm install
+copy .dev.vars.example .dev.vars
+npm test -- --run
+npm run typecheck
+npx wrangler dev
 ```
 
-Install the dependencies after activating the environment:
+Set `BOT_TOKEN` and `WEBHOOK_SECRET` in `.dev.vars`. Never commit that file.
+
+## Cloudflare deployment
 
 ```bash
-python -m pip install -r requirements.txt
+npx wrangler d1 create four-tendencies-bot
+npx wrangler d1 migrations apply four-tendencies-bot --remote
+npx wrangler secret put BOT_TOKEN
+npx wrangler secret put WEBHOOK_SECRET
+npx wrangler deploy
 ```
 
-Copy `.env.example` to `.env` and add the token:
-
-```powershell
-# Windows PowerShell
-Copy-Item .env.example .env
-```
-
-```bash
-# macOS/Linux
-cp .env.example .env
-```
-
-Never publish the token or commit `.env`.
-
-## Running
-
-```bash
-python bot.py
-```
-
-User messages and bot buttons are in Ukrainian. The MVP uses aiogram's
-`MemoryStorage`; replace it with `RedisStorage` for a multi-process production
-deployment.
+Register the deployed `https://<worker>.workers.dev/webhook` URL through
+Telegram's `setWebhook` method and pass the same value as `secret_token` that
+was stored in `WEBHOOK_SECRET`. Confirm the deployment with `/health` and
+Telegram's `getWebhookInfo` method.
 
 ## Tests
 
 ```bash
-python -m pytest tests/
+npm test -- --run
+npm run typecheck
+npx wrangler deploy --dry-run
 ```

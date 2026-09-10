@@ -11,7 +11,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "four-tendencies-bot"
+      "database_name": "four-tendencies-bot",
+      "database_id": "547385f4-00d1-4694-b97b-3a7a556e0742",
+      "migrations_dir": "migrations"
     }
   ]
 }
