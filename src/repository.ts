@@ -58,6 +58,13 @@ export class BotRepository {
     return result.meta.changes === 1;
   }
 
+  async releaseUpdate(updateId: number): Promise<void> {
+    await this.database
+      .prepare("DELETE FROM processed_updates WHERE update_id = ?")
+      .bind(updateId)
+      .run();
+  }
+
   async getSession(userId: number): Promise<SessionRecord | null> {
     const row = await this.database
       .prepare(
